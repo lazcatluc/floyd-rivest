@@ -12,6 +12,6 @@ public class ElementPositionTest {
     public void finds4ToBeThe4thElementInNaturalNumbers() throws Exception {
         List<Integer> numbers = Arrays.asList(5, 0, 9, 10, 2, 6, 3, 4, 1, 8);
         
-        assertThat(new ElementPosition<>(numbers).getPositionFor(4)).isEqualTo(4);
+        assertThat(ElementPosition.in(numbers).of(4)).isEqualTo(4);
     }
 }

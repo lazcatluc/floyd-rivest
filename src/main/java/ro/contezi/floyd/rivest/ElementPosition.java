@@ -8,18 +8,20 @@ public class ElementPosition<T> {
     private final Collection<T> elements;
     private final Comparator<? super T> comparator;
 
-    public ElementPosition(Collection<T> elements, Comparator<? super T> comparator) {
+    private ElementPosition(Collection<T> elements, Comparator<? super T> comparator) {
         this.elements = elements;
         this.comparator = comparator;
     }
     
-    @SuppressWarnings("unchecked")
-    public ElementPosition(Collection<T> elements) {
-        this(elements, (e1, e2) -> ((Comparable<? super T>)e1).compareTo(e2));
-    }
-
-    public long getPositionFor(T element) {
+    public long of(T element) {
         return elements.stream().filter(e -> comparator.compare(e, element) < 0).count();
     }
 
+    public static <T> ElementPosition<T> of(Collection<T> elements, Comparator<? super T> comparator) {
+        return new ElementPosition<>(elements, comparator);
+    }
+ 
+    public static <T extends Comparable<? super T>> ElementPosition<T> in(Collection<T> elements) {
+        return new ElementPosition<>(elements, (e1, e2) -> e1.compareTo(e2));
+    }
 }
