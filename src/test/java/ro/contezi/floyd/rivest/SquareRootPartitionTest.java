@@ -14,8 +14,8 @@ public class SquareRootPartitionTest extends PartitionTest {
     }
     
     @Test
-    public void partitionsOriginalIntoFourElements() throws Exception {
-        assertThat(new SquareRootPartition<>(ORIGINAL).partition()).hasSize(4);
+    public void partitionsOriginalIntoFiveElements() throws Exception {
+        assertThat(new SquareRootPartition<>(ORIGINAL).partition()).hasSize(5);
     }
 
 }
