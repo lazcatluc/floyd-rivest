@@ -17,7 +17,7 @@ public class ElementPosition<T> {
         return elements.stream().filter(e -> comparator.compare(e, element) < 0).count();
     }
 
-    public static <T> ElementPosition<T> of(Collection<T> elements, Comparator<? super T> comparator) {
+    public static <T> ElementPosition<T> in(Collection<T> elements, Comparator<? super T> comparator) {
         return new ElementPosition<>(elements, comparator);
     }
  
