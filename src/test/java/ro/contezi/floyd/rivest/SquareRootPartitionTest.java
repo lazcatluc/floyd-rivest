@@ -10,12 +10,12 @@ public class SquareRootPartitionTest extends PartitionTest {
 
     @Override
     protected <T> Collection<T> partition(Collection<T> original) {
-        return new SquareRootPartition().partition(original);
+        return new SquareRootPartition<>(original).partition();
     }
     
     @Test
     public void partitionsOriginalIntoFourElements() throws Exception {
-        assertThat(new SquareRootPartition().partition(ORIGINAL)).hasSize(4);
+        assertThat(new SquareRootPartition<>(ORIGINAL).partition()).hasSize(4);
     }
 
 }
