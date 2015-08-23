@@ -4,7 +4,6 @@ import static org.assertj.core.api.StrictAssertions.assertThat;
 
 import org.junit.Test;
 
-import ro.contezi.floyd.rivest.paginator.APaginator;
 import ro.contezi.floyd.rivest.selector.PartitionSelector;
 
 public class RecursiveKthElementSelectorTest {

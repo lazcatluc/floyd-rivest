@@ -1,4 +1,4 @@
-package ro.contezi.floyd.rivest.paginator;
+package ro.contezi.floyd.rivest;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,15 +9,16 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import ro.contezi.floyd.rivest.Paginator;
-import ro.contezi.floyd.rivest.Partition;
-import ro.contezi.floyd.rivest.Selector;
+import ro.contezi.floyd.rivest.paginator.DoubleSelectorPaginator;
+import ro.contezi.floyd.rivest.paginator.RecursiveKthElementPaginator;
+import ro.contezi.floyd.rivest.paginator.SortingPaginator;
 import ro.contezi.floyd.rivest.partition.FixedSize;
 import ro.contezi.floyd.rivest.partition.Log2;
 import ro.contezi.floyd.rivest.partition.SquareRoot;
 import ro.contezi.floyd.rivest.selector.KthElementSelector;
 import ro.contezi.floyd.rivest.selector.RecursiveKthElementSelector;
 
+@SuppressWarnings("rawtypes")
 public class APaginator<T> {
     private Collection<T> data = Collections.emptyList();
     private Comparator<? super T> comparator;
@@ -28,7 +29,8 @@ public class APaginator<T> {
     private Class<? extends Partition> partition = Log2.class;
     private Class<? extends Paginator> paginator = RecursiveKthElementPaginator.class;
     private int fixedSize = 200;
-    {
+    
+    private APaginator() {
         partitioners.put(Log2.class, Log2<T>::new);
         partitioners.put(SquareRoot.class, SquareRoot<T>::new);
         partitioners.put(FixedSize.class, (data) -> new FixedSize<>(data, fixedSize));
@@ -40,11 +42,7 @@ public class APaginator<T> {
                 .get(), comparator));
         paginators.put(SortingPaginator.class, () -> new SortingPaginator<>(new ArrayList<>(data), comparator));
         paginators.put(RecursiveKthElementPaginator.class,
-                () -> new RecursiveKthElementPaginator<>(data, partitioners.get(partition), comparator));
-    }
-
-    private APaginator() {
-
+                () -> new RecursiveKthElementPaginator<>(data, partitioners.get(partition), comparator));  
     }
 
     public APaginator<T> withData(Collection<T> data) {
@@ -89,18 +87,24 @@ public class APaginator<T> {
         return partitioners.get(partition).apply(data);
     }
 
-    public static <T extends Comparable<T>> APaginator<T> of(Class<T> clazz) {
-        return new APaginator<T>().withComparator((t1, t2) -> t1.compareTo(t2));
-    }
-
-    public static <T> APaginator<T> of(Class<T> clazz, Comparator<? super T> comp) {
-        return new APaginator<T>().withComparator((t1, t2) -> comp.compare(t1, t2));
-    }
-
     public APaginator<T> withPartition(Partition<T> partition2) {
         partitioners.put(partition2.getClass(), (data) -> partition2);
         partition = partition2.getClass();
         return this;
+    }
+    
+    public APaginator<T> withPartitionSupplier(Function<Collection<T>, Partition<T>> partitionSupplier) {
+        partitioners.put(Partition.class, partitionSupplier);
+        partition = Partition.class;
+        return this;
+    }
+    
+    public static <T extends Comparable<T>> APaginator<T> of(Class<T> clazz) {
+        return new APaginator<T>().withComparator((t1, t2) -> t1.compareTo(t2));
+    }
+    
+    public static <T> APaginator<T> of(Comparator<? super T> comp) {
+        return new APaginator<T>().withComparator((t1, t2) -> comp.compare(t1, t2));
     }
 
 }

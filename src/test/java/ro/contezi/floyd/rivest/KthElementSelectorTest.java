@@ -8,7 +8,6 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
-import ro.contezi.floyd.rivest.paginator.APaginator;
 import ro.contezi.floyd.rivest.partition.SquareRoot;
 import ro.contezi.floyd.rivest.selector.KthElementSelector;
 import ro.contezi.floyd.rivest.selector.PartitionSelector;

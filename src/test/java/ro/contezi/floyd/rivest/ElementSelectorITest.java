@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import ro.contezi.floyd.rivest.paginator.APaginator;
 import ro.contezi.floyd.rivest.paginator.DoubleSelectorPaginator;
 import ro.contezi.floyd.rivest.paginator.SortingPaginator;
 import ro.contezi.floyd.rivest.partition.FixedSize;
@@ -31,7 +30,7 @@ public class ElementSelectorITest {
     @Before
     public void setUp() {
         data = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             data.add(i);
         }
         Collections.shuffle(data);
@@ -42,7 +41,7 @@ public class ElementSelectorITest {
             return e1.compareTo(e2);
         };
         pageSize = 10;
-        aPaginator = APaginator.of(Integer.class, comparator).withData(data);
+        aPaginator = APaginator.of(comparator).withData(data);
     }
 
     protected void assertFindsElementsInSample(Selector<Integer> selector) {

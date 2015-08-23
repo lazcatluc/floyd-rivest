@@ -14,7 +14,6 @@ import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 
-import ro.contezi.floyd.rivest.paginator.APaginator;
 import ro.contezi.floyd.rivest.paginator.DoubleSelectorPaginator;
 import ro.contezi.floyd.rivest.paginator.RecursiveKthElementPaginator;
 import ro.contezi.floyd.rivest.paginator.SortingPaginator;
