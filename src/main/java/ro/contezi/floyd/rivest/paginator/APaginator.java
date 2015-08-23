@@ -96,4 +96,11 @@ public class APaginator<T> {
     public static <T> APaginator<T> of(Class<T> clazz, Comparator<? super T> comp) {
         return new APaginator<T>().withComparator((t1, t2) -> comp.compare(t1, t2));
     }
+
+    public APaginator<T> withPartition(Partition<T> partition2) {
+        partitioners.put(partition2.getClass(), (data) -> partition2);
+        partition = partition2.getClass();
+        return this;
+    }
+
 }
