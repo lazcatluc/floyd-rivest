@@ -1,12 +1,12 @@
-package ro.contezi.floyd.rivest;
+package ro.contezi.floyd.rivest.partition;
 
 import java.util.Collection;
 
-public class Log2Partition<T> extends IndexPartition<T> {
+public class Log2<T> extends Index<T> {
     
     private static final Double LOG2 = Math.log(2);
 
-    public Log2Partition(Collection<T> original) {
+    public Log2(Collection<T> original) {
         super(original);
     }
 

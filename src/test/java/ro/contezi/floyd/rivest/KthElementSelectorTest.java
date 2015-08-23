@@ -8,13 +8,17 @@ import java.util.Comparator;
 
 import org.junit.Test;
 
+import ro.contezi.floyd.rivest.partition.SquareRoot;
+import ro.contezi.floyd.rivest.selector.KthElementSelector;
+import ro.contezi.floyd.rivest.selector.PartitionSelector;
+
 public class KthElementSelectorTest {
     @Test
     public void updatesRankAccordingToPartitionSize() throws Exception {
         Collection<Integer> data = PartitionTest.ORIGINAL;
         Comparator<Integer> comparator = (e1, e2) -> e1.compareTo(e2);
 
-        PartitionSelector<Integer> selector = new KthElementSelector<>(data, new SquareRootPartition<>(data),
+        PartitionSelector<Integer> selector = new KthElementSelector<>(data, new SquareRoot<>(data),
                 comparator);
 
         assertThat(selector.partitionRank(4)).isEqualTo(1);
@@ -42,7 +46,7 @@ public class KthElementSelectorTest {
         Collection<Integer> data = PartitionTest.ORIGINAL;
         Comparator<Integer> comparator = (e1, e2) -> e1.compareTo(e2);
 
-        PartitionSelector<Integer> selector = new KthElementSelector<>(data, new SquareRootPartition<>(data),
+        PartitionSelector<Integer> selector = new KthElementSelector<>(data, new SquareRoot<>(data),
                 comparator);
 
         for (int i = 1; i < data.size(); i++) {

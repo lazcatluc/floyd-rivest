@@ -6,14 +6,16 @@ import java.util.Collection;
 
 import org.junit.Test;
 
+import ro.contezi.floyd.rivest.partition.Log2;
+
 public class Log2PartitionTest extends PartitionTest {
     @Override
     protected <T> Collection<T> partition(Collection<T> original) {
-        return new Log2Partition<>(original).partition();
+        return new Log2<>(original).partition();
     }
     
     @Test
     public void partitionsOriginalIntoFourElements() throws Exception {
-        assertThat(new Log2Partition<>(ORIGINAL).partition()).hasSize(4);
+        assertThat(new Log2<>(ORIGINAL).partition()).hasSize(4);
     }
 }

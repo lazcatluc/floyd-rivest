@@ -9,14 +9,34 @@ import java.util.List;
 
 import org.junit.Test;
 
+import ro.contezi.floyd.rivest.paginator.DoubleSelectorPaginator;
+import ro.contezi.floyd.rivest.paginator.SortingPaginator;
+import ro.contezi.floyd.rivest.partition.Log2;
+import ro.contezi.floyd.rivest.selector.PartitionSelector;
+import ro.contezi.floyd.rivest.selector.RecursiveKthElementSelector;
+
 public class PaginatorTest {
     @Test
     public void page1With5ResultsIs6Through10() throws Exception {
         Comparator<? super Integer> comparator = (i1, i2) -> i1.compareTo(i2);
         Collection<Integer> data = PartitionTest.ORIGINAL;
         PartitionSelector<Integer> selector = new RecursiveKthElementSelector<Integer>(data,
-                Log2Partition<Integer>::new, comparator);
-        Paginator<Integer> paginator = new Paginator<>(data, selector, comparator);
+                Log2<Integer>::new, comparator);
+        DoubleSelectorPaginator<Integer> paginator = new DoubleSelectorPaginator<>(data, selector, comparator);
+
+        final long page = 1;
+        final long pageSize = 5;
+        List<Integer> paged = paginator.getPage(page, pageSize);
+
+        assertThat(paged).isEqualTo(Arrays.asList(6, 7, 8, 9, 10));
+    }
+    
+    @Test
+    public void page1With5ResultsIs6Through10BySorting() throws Exception {
+        Comparator<? super Integer> comparator = (i1, i2) -> i1.compareTo(i2);
+        List<Integer> data = PartitionTest.ORIGINAL;
+
+        Paginator<Integer> paginator = new SortingPaginator<>(data, comparator);
 
         final long page = 1;
         final long pageSize = 5;

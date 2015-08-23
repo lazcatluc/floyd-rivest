@@ -4,6 +4,6 @@ import java.util.Collection;
 
 public interface Partition<T> {
 
-    public abstract Collection<T> partition();
+    Collection<T> partition();
 
 }

@@ -12,6 +12,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import ro.contezi.floyd.rivest.paginator.DoubleSelectorPaginator;
+import ro.contezi.floyd.rivest.paginator.SortingPaginator;
+import ro.contezi.floyd.rivest.partition.FixedSize;
+import ro.contezi.floyd.rivest.partition.Log2;
+import ro.contezi.floyd.rivest.partition.SquareRoot;
+import ro.contezi.floyd.rivest.selector.KthElementSelector;
+import ro.contezi.floyd.rivest.selector.PartitionSelector;
+import ro.contezi.floyd.rivest.selector.RecursiveKthElementSelector;
+
 public class ElementSelectorITest {
     
     private List<Integer> data;
@@ -42,59 +51,66 @@ public class ElementSelectorITest {
     @Test
     @Ignore
     public void findsElementsNonRecursiveSquareRoot() throws Exception {
-        assertFindsElementsInSample(new KthElementSelector<>(data, new SquareRootPartition<>(data),
+        assertFindsElementsInSample(new KthElementSelector<>(data, new SquareRoot<>(data),
                 comparator));
     }
 
     @Test
     public void findsPagesInPaginator() throws Exception {
-        Paginator<Integer> paginator = new Paginator<>(data, new RecursiveKthElementSelector<Integer>(data, Log2Partition<Integer>::new,
-                comparator), comparator);
         int pageSize = 10;
-        sample.stream().mapToInt(i -> i / pageSize).forEach(i -> paginator.getPage(i, pageSize));
+        sample.stream().mapToInt(i -> i / pageSize).forEach(i -> {Collections.shuffle(data); new DoubleSelectorPaginator<>(data, new RecursiveKthElementSelector<Integer>(data, Log2<Integer>::new,
+                comparator), comparator).getPage(i, pageSize);});
+        
+        System.out.println(comparissons.get() / data.size() / sample.size());
+    }
+    
+    @Test
+    public void findsPagesInSortingPaginator() throws Exception {
+        int pageSize = 10;
+        sample.stream().mapToInt(i -> i / pageSize).forEach( i ->{Collections.shuffle(data); new SortingPaginator<>(data, comparator).getPage(i, pageSize);});
         
         System.out.println(comparissons.get() / data.size() / sample.size());
     }
     
     @Test
     public void findsElementsRecursiveLog2() throws Exception {
-        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, Log2Partition<Integer>::new,
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, Log2<Integer>::new,
                 comparator));
     }
     
     @Test
     public void findsElementsRecursiveFixedSize20() throws Exception {
-        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(20),
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSize.supplier(20),
                 comparator));
     }
     
     @Test
     public void findsElementsRecursiveFixedSize200() throws Exception {
-        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(200),
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSize.supplier(200),
                 comparator));
     }
     
     @Test
     public void findsElementsRecursiveFixedSize2000() throws Exception {
-        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(2000),
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSize.supplier(2000),
                 comparator));
     }
     
     @Test
     public void findsElementsRecursiveFixedSize600() throws Exception {
-        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(600),
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSize.supplier(600),
                 comparator));
     }
     
     @Test
     public void findsElementsRecursiveFixedSize1000() throws Exception {
-        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(1000),
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSize.supplier(1000),
                 comparator));
     }
     
     @Test
     public void findsElementsRecursiveFixedSize1500() throws Exception {
-        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(1500),
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSize.supplier(1500),
                 comparator));
     }
 }

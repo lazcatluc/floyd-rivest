@@ -1,11 +1,13 @@
-package ro.contezi.floyd.rivest;
+package ro.contezi.floyd.rivest.partition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
-public abstract class IndexPartition<T> implements Partition<T> {
+import ro.contezi.floyd.rivest.Partition;
+
+public abstract class Index<T> implements Partition<T> {
 
     private final Collection<T> original;
 
@@ -13,7 +15,7 @@ public abstract class IndexPartition<T> implements Partition<T> {
 
     protected final Random random;
 
-    public IndexPartition(Collection<T> original) {
+    public Index(Collection<T> original) {
         this.original = original;
         random = new Random();
     }

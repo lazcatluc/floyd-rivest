@@ -7,13 +7,18 @@ import java.util.Comparator;
 
 import org.junit.Test;
 
+import ro.contezi.floyd.rivest.partition.FixedSize;
+import ro.contezi.floyd.rivest.partition.Log2;
+import ro.contezi.floyd.rivest.selector.PartitionSelector;
+import ro.contezi.floyd.rivest.selector.RecursiveKthElementSelector;
+
 public class RecursiveKthElementSelectorTest {
     @Test
     public void updatesRankAccordingToPartitionSize() throws Exception {
         Collection<Integer> data = PartitionTest.ORIGINAL;
         Comparator<Integer> comparator = (e1, e2) -> e1.compareTo(e2);
 
-        PartitionSelector<Integer> selector = new RecursiveKthElementSelector<Integer>(data, Log2Partition<Integer>::new,
+        PartitionSelector<Integer> selector = new RecursiveKthElementSelector<Integer>(data, Log2<Integer>::new,
                 comparator);
 
         assertThat(selector.partitionRank(4)).isEqualTo(0);
@@ -26,7 +31,7 @@ public class RecursiveKthElementSelectorTest {
         Collection<Integer> data = PartitionTest.ORIGINAL;
         Comparator<Integer> comparator = (e1, e2) -> e1.compareTo(e2);
 
-        PartitionSelector<Integer> selector = new RecursiveKthElementSelector<Integer>(data, Log2Partition<Integer>::new,
+        PartitionSelector<Integer> selector = new RecursiveKthElementSelector<Integer>(data, Log2<Integer>::new,
                 comparator);
 
         assertThat(selector.find(0)).isEqualTo(1);
@@ -40,7 +45,7 @@ public class RecursiveKthElementSelectorTest {
         Collection<Integer> data = PartitionTest.ORIGINAL;
         Comparator<Integer> comparator = (e1, e2) -> e1.compareTo(e2);
 
-        PartitionSelector<Integer> selector = new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(20),
+        PartitionSelector<Integer> selector = new RecursiveKthElementSelector<Integer>(data, FixedSize.supplier(20),
                 comparator);
 
         assertThat(selector.find(0)).isEqualTo(1);

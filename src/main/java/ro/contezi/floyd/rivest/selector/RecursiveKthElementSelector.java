@@ -1,4 +1,4 @@
-package ro.contezi.floyd.rivest;
+package ro.contezi.floyd.rivest.selector;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import ro.contezi.floyd.rivest.ElementPosition;
+import ro.contezi.floyd.rivest.Partition;
 
 public class RecursiveKthElementSelector<T> implements PartitionSelector<T> {
 
