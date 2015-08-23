@@ -43,7 +43,7 @@ public class RecursiveKthElementSelector<T> implements PartitionSelector<T> {
             return lowerBound;
         }
         if (lowerBoundPosition > k) {
-            List<T> newList = original.stream().filter(t -> comparator.compare(t, lowerBound) < 0)
+            List<T> newList = original.parallelStream().filter(t -> comparator.compare(t, lowerBound) < 0)
                     .collect(Collectors.toList());
             return new RecursiveKthElementSelector<T>(newList, partitionSupplier, comparator).find(k);
         }
@@ -53,13 +53,13 @@ public class RecursiveKthElementSelector<T> implements PartitionSelector<T> {
             return upperBound;
         }
         if (upperBoundPosition < k) {
-            List<T> newList = original.stream().filter(t -> comparator.compare(upperBound, t) < 0)
+            List<T> newList = original.parallelStream().filter(t -> comparator.compare(upperBound, t) < 0)
                     .collect(Collectors.toList());
             return new RecursiveKthElementSelector<T>(newList, partitionSupplier, comparator).find(k
                     - upperBoundPosition - 1);
         }
 
-        List<T> newList = original.stream()
+        List<T> newList = original.parallelStream()
                 .filter(t -> comparator.compare(upperBound, t) > 0 && comparator.compare(t, lowerBound) > 0)
                 .collect(Collectors.toList());
         return new RecursiveKthElementSelector<T>(newList, partitionSupplier, comparator).find(k - lowerBoundPosition

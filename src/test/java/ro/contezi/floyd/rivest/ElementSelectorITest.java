@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ElementSelectorITest {
@@ -25,7 +26,7 @@ public class ElementSelectorITest {
             data.add(i);
         }
         Collections.shuffle(data);
-        sample = data.subList(0, 10);
+        sample = data.subList(0, 100);
         comparissons = new AtomicLong(0);
         comparator = (e1, e2) ->  {comparissons.incrementAndGet(); return e1.compareTo(e2);};
 
@@ -39,6 +40,7 @@ public class ElementSelectorITest {
     }
     
     @Test
+    @Ignore
     public void findsElementsNonRecursiveSquareRoot() throws Exception {
         assertFindsElementsInSample(new KthElementSelector<>(data, new SquareRootPartition<>(data),
                 comparator));
@@ -66,6 +68,24 @@ public class ElementSelectorITest {
     @Test
     public void findsElementsRecursiveFixedSize2000() throws Exception {
         assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(2000),
+                comparator));
+    }
+    
+    @Test
+    public void findsElementsRecursiveFixedSize600() throws Exception {
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(600),
+                comparator));
+    }
+    
+    @Test
+    public void findsElementsRecursiveFixedSize1000() throws Exception {
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(1000),
+                comparator));
+    }
+    
+    @Test
+    public void findsElementsRecursiveFixedSize1500() throws Exception {
+        assertFindsElementsInSample(new RecursiveKthElementSelector<Integer>(data, FixedSizePartition.supplier(1500),
                 comparator));
     }
 }

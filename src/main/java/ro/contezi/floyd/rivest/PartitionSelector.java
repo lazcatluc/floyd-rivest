@@ -8,7 +8,7 @@ public interface PartitionSelector<T> {
      *            the rank of the element to find
      * @return the kth element
      */
-    public abstract T find(long k);
+    T find(long k);
 
     /**
      * 
@@ -16,6 +16,6 @@ public interface PartitionSelector<T> {
      *            the rank of the element to find
      * @return the rank in the smaller partition
      */
-    public abstract int partitionRank(long k);
+    int partitionRank(long k);
 
 }

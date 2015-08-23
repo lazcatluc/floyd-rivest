@@ -14,7 +14,7 @@ public class ElementPosition<T> {
     }
     
     public long of(T element) {
-        return elements.stream().filter(e -> comparator.compare(e, element) < 0).count();
+        return elements.parallelStream().filter(e -> comparator.compare(e, element) < 0).count();
     }
 
     public static <T> ElementPosition<T> in(Collection<T> elements, Comparator<? super T> comparator) {
