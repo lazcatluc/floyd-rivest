@@ -16,19 +16,13 @@ public class SortingPaginator<T> implements Paginator<T> {
     }
 
     @Override
-    public List<T> getPage(long page, long pageSize) {
-        long firstResult = page * pageSize;
-        long lastResult = (page + 1) * pageSize - 1;
-        if (firstResult < 0) {
-            firstResult = 0;
-        }
-        if (lastResult > data.size() - 1) {
-            lastResult = data.size() - 1;
-        }
-        if (lastResult < firstResult) {
-            return Collections.emptyList();
-        }
-        return data.subList((int)firstResult, (int)lastResult + 1);
+    public List<T> getBetween(long first, long last) {
+        return data.subList((int)first, (int)last + 1);
+    }
+
+    @Override
+    public long getTotalResults() {
+        return data.size();
     }
 
 }

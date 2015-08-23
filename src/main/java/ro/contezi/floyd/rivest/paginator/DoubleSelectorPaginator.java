@@ -23,24 +23,18 @@ public class DoubleSelectorPaginator<T> implements Paginator<T> {
     }
 
     @Override
-    public List<T> getPage(long page, long pageSize) {
-        long firstResult = page * pageSize;
-        long lastResult = (page + 1) * pageSize - 1;
-        if (firstResult < 0) {
-            firstResult = 0;
-        }
-        if (lastResult > data.size() - 1) {
-            lastResult = data.size() - 1;
-        }
-        if (lastResult < firstResult) {
-            return Collections.emptyList();
-        }
+    public List<T> getBetween(long firstResult, long lastResult) {
         T first = selector.find(firstResult);
         T last = selector.find(lastResult);
         List<T> pageResult = data.parallelStream().filter(t -> comparator.compare(first, t) <= 0 && 
                 comparator.compare(t, last) <= 0).collect(Collectors.toList());
         Collections.sort(pageResult, comparator);
         return pageResult;
+    }
+
+    @Override
+    public long getTotalResults() {
+        return data.size();
     }
     
 }

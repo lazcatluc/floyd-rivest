@@ -12,7 +12,11 @@ public class Log2<T> extends Index<T> {
 
     @Override
     protected int desiredSize() {
-        return (int)(Math.log(originalSize())/LOG2);
+        final int originalSize = originalSize();
+        if (originalSize < 2) {
+            return 0;
+        }
+        return (int)(Math.log(originalSize)/LOG2);
     }
 
 }
