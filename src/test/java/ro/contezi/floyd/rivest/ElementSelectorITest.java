@@ -22,7 +22,7 @@ public class ElementSelectorITest {
     @Before
     public void setUp() {
         data = new ArrayList<>();
-        for (int i = 0; i < 10000000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             data.add(i);
         }
         Collections.shuffle(data);
@@ -46,6 +46,15 @@ public class ElementSelectorITest {
                 comparator));
     }
 
+    @Test
+    public void findsPagesInPaginator() throws Exception {
+        Paginator<Integer> paginator = new Paginator<>(data, new RecursiveKthElementSelector<Integer>(data, Log2Partition<Integer>::new,
+                comparator), comparator);
+        int pageSize = 10;
+        sample.stream().mapToInt(i -> i / pageSize).forEach(i -> paginator.getPage(i, pageSize));
+        
+        System.out.println(comparissons.get() / data.size() / sample.size());
+    }
     
     @Test
     public void findsElementsRecursiveLog2() throws Exception {
