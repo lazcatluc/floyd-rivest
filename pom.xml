@@ -4,6 +4,7 @@
 	<groupId>ro.contezi</groupId>
 	<artifactId>floyd-rivest</artifactId>
 	<version>1.0</version>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
