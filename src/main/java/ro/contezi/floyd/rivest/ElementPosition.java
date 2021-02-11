@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class ElementPosition<T> {
 
@@ -70,5 +71,13 @@ public class ElementPosition<T> {
  
     public static <T extends Comparable<? super T>> ElementPosition<T> in(Collection<T> elements) {
         return new ElementPosition<>(elements, Comparator.naturalOrder());
+    }
+
+    public T getOneLower() {
+        return lower.stream().findAny().orElseThrow(ArrayIndexOutOfBoundsException::new);
+    }
+
+    public T getOneHigher() {
+        return higherOrEqual.stream().filter(e -> comparator.compare(positioned, e) < 0).findAny().orElse(null);
     }
 }

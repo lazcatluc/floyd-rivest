@@ -18,6 +18,7 @@ import ro.contezi.floyd.rivest.paginator.DoubleSelectorPaginator;
 import ro.contezi.floyd.rivest.paginator.RecursiveKthElementPaginator;
 import ro.contezi.floyd.rivest.paginator.SortingPaginator;
 import ro.contezi.floyd.rivest.partition.Log2;
+import ro.contezi.floyd.rivest.selector.ElementPositionSelector;
 
 public class PaginatorTest {
 
@@ -33,6 +34,13 @@ public class PaginatorTest {
     @Test
     public void page1With5ResultsIs6Through10() throws Exception {
         assertThat(aPaginator.ofClass(DoubleSelectorPaginator.class).make().getPage((long) 1, (long) 5)).isEqualTo(
+                Arrays.asList(6, 7, 8, 9, 10));
+    }
+
+    @Test
+    public void page1With5ResultsIs6Through10WithElementPositionSelector() throws Exception {
+        assertThat(aPaginator.ofClass(DoubleSelectorPaginator.class).withSelector(ElementPositionSelector.class)
+                .make().getPage((long) 1, (long) 5)).isEqualTo(
                 Arrays.asList(6, 7, 8, 9, 10));
     }
 

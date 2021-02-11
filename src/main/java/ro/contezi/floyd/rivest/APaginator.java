@@ -15,6 +15,7 @@ import ro.contezi.floyd.rivest.paginator.SortingPaginator;
 import ro.contezi.floyd.rivest.partition.FixedSize;
 import ro.contezi.floyd.rivest.partition.Log2;
 import ro.contezi.floyd.rivest.partition.SquareRoot;
+import ro.contezi.floyd.rivest.selector.ElementPositionSelector;
 import ro.contezi.floyd.rivest.selector.KthElementSelector;
 import ro.contezi.floyd.rivest.selector.RecursiveKthElementSelector;
 
@@ -36,6 +37,7 @@ public class APaginator<T> {
         partitioners.put(FixedSize.class, (data) -> new FixedSize<>(data, fixedSize));
         selectors.put(RecursiveKthElementSelector.class,
                 () -> new RecursiveKthElementSelector<T>(data, partitioners.get(partition), comparator));
+        selectors.put(ElementPositionSelector.class, () -> new ElementPositionSelector<>(data, comparator));
         selectors.put(KthElementSelector.class, () -> new KthElementSelector<T>(data, partitioners.get(partition)
                 .apply(data), comparator));
         paginators.put(DoubleSelectorPaginator.class, () -> new DoubleSelectorPaginator<>(data, selectors.get(selector)

@@ -16,6 +16,7 @@ import ro.contezi.floyd.rivest.paginator.DoubleSelectorPaginator;
 import ro.contezi.floyd.rivest.paginator.SortingPaginator;
 import ro.contezi.floyd.rivest.partition.FixedSize;
 import ro.contezi.floyd.rivest.partition.SquareRoot;
+import ro.contezi.floyd.rivest.selector.ElementPositionSelector;
 import ro.contezi.floyd.rivest.selector.KthElementSelector;
 
 public class ElementSelectorITest {
@@ -46,7 +47,12 @@ public class ElementSelectorITest {
 
     protected void assertFindsElementsInSample(Selector<Integer> selector) {
         for (Integer i : sample) {
-            assertThat(selector.find(i)).isEqualTo(i);
+            try {
+                assertThat(selector.find(i)).isEqualTo(i);
+            } catch (RuntimeException re) {
+                System.out.println("Failed for " + i + " in " + data);
+                throw re;
+            }
         }
         System.out.println(comparissons.get() / data.size() / sample.size());
     }
@@ -135,7 +141,12 @@ public class ElementSelectorITest {
     public void findsElementsRecursiveFixedSize1500() throws Exception {
         assertFindsElementsInSample(fixedSizeSelector(1500));
     }
-    
+
+    @Test
+    public void findsElementsInElementPositionSelector() {
+        assertFindsElementsInSample(aPaginator.withSelector(ElementPositionSelector.class).makeSelector());
+    }
+
     protected Selector<Integer> fixedSizeSelector(final int fixedSize) {
         return aPaginator.withPartitioner(FixedSize.class).withFixedSize(fixedSize).makeSelector();
     }
