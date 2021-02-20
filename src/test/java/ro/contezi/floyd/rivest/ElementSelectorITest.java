@@ -47,6 +47,7 @@ public class ElementSelectorITest {
     }
 
     protected void assertFindsElementsInSample(String title, Selector<Integer> selector) throws Throwable {
+        long start = System.currentTimeMillis();
         for (Integer i : sample) {
             try {
                 assertThat(selector.find(i)).isEqualTo(i);
@@ -55,7 +56,9 @@ public class ElementSelectorITest {
                 throw re;
             }
         }
-        System.out.println(title + ": " + comparissons.get() / data.size() / sample.size());
+        long end = System.currentTimeMillis();
+        System.out.println(title + ": " + comparissons.get() / data.size() / sample.size()
+                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
     }
 
     @Test
@@ -67,6 +70,7 @@ public class ElementSelectorITest {
 
     @Test
     public void findsPagesInPaginator() throws Throwable {
+        long start = System.currentTimeMillis();
         sample.stream()
                 .mapToInt(i -> i / pageSize)
                 .forEach(
@@ -78,11 +82,14 @@ public class ElementSelectorITest {
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
 
-        System.out.println("findsPagesInPaginator: " + (comparissons.get() / data.size() / sample.size()));
+        long end = System.currentTimeMillis();
+        System.out.println("findsPagesInPaginator: " + (comparissons.get() / data.size() / sample.size())
+                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
     }
 
     @Test
     public void findsPagesInSortingPaginator() throws Throwable {
+        long start = System.currentTimeMillis();
         sample.stream().mapToInt(i -> i / pageSize).forEach(i -> {
             Collections.shuffle(data);
             List<Integer> paged = aPaginator.ofClass(SortingPaginator.class).make().getPage(i, pageSize);
@@ -90,11 +97,14 @@ public class ElementSelectorITest {
             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
         });
 
-        System.out.println("findsPagesInSortingPaginator: " + (comparissons.get() / data.size() / sample.size()));
+        long end = System.currentTimeMillis();
+        System.out.println("findsPagesInSortingPaginator: " + (comparissons.get() / data.size() / sample.size())
+                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
     }
 
     @Test
     public void findsPagesInRecursivePaginator() throws Throwable {
+        long start = System.currentTimeMillis();
         sample.stream()
                 .mapToInt(i -> i / pageSize)
                 .forEach(
@@ -105,11 +115,14 @@ public class ElementSelectorITest {
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
 
-        System.out.println("findsPagesInRecursivePaginator: " + (comparissons.get() / data.size() / sample.size()));
+        long end = System.currentTimeMillis();
+        System.out.println("findsPagesInRecursivePaginator: " + (comparissons.get() / data.size() / sample.size())
+                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
     }
 
     @Test
     public void findsPagesInPaginatorWithElementPositionSelector() throws Throwable {
+        long start = System.currentTimeMillis();
         sample.stream()
                 .mapToInt(i -> i / pageSize)
                 .forEach(
@@ -121,12 +134,14 @@ public class ElementSelectorITest {
                             assertThat(paged.get(0) % pageSize).isZero();
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
-
-        System.out.println("findsPagesInPaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size()));
+        long end = System.currentTimeMillis();
+        System.out.println("findsPagesInPaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size())
+                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
     }
 
     @Test
     public void findsPagesInSortingPaginatorWithElementPositionSelector() throws Throwable {
+        long start = System.currentTimeMillis();
         sample.stream().mapToInt(i -> i / pageSize).forEach(i -> {
             Collections.shuffle(data);
             List<Integer> paged = aPaginator.ofClass(SortingPaginator.class)
@@ -134,12 +149,14 @@ public class ElementSelectorITest {
             assertThat(paged.get(0) % pageSize).isZero();
             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
         });
-
-        System.out.println("findsPagesInSortingPaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size()));
+        long end = System.currentTimeMillis();
+        System.out.println("findsPagesInSortingPaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size())
+                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
     }
 
     @Test
     public void findsPagesInRecursivePaginatorWithElementPositionSelector() throws Throwable {
+        long start = System.currentTimeMillis();
         sample.stream()
                 .mapToInt(i -> i / pageSize)
                 .forEach(
@@ -150,7 +167,9 @@ public class ElementSelectorITest {
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
 
-        System.out.println("findsPagesInRecursivePaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size()));
+        long end = System.currentTimeMillis();
+        System.out.println("findsPagesInRecursivePaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size())
+                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
     }
 
     @Test
