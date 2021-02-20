@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -71,13 +72,11 @@ public class ElementSelectorITest {
     @Test
     public void findsPagesInPaginator() throws Throwable {
         long start = System.currentTimeMillis();
-        sample.stream()
-                .mapToInt(i -> i / pageSize)
+        Paginator<Integer> paginator = aPaginator.ofClass(DoubleSelectorPaginator.class).make();
+        IntStream.range(0, sample.size())
                 .forEach(
                         i -> {
-                            Collections.shuffle(data);
-
-                            List<Integer> paged = aPaginator.ofClass(DoubleSelectorPaginator.class).make().getPage(i, pageSize);
+                            List<Integer> paged = paginator.getPage(i, pageSize);
                             assertThat(paged.get(0) % pageSize).isZero();
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
@@ -89,28 +88,31 @@ public class ElementSelectorITest {
 
     @Test
     public void findsPagesInSortingPaginator() throws Throwable {
-        long start = System.currentTimeMillis();
-        sample.stream().mapToInt(i -> i / pageSize).forEach(i -> {
+        AtomicLong start = new AtomicLong(System.currentTimeMillis());
+        IntStream.range(0, sample.size()).forEach(i -> {
+            long excludeStart = System.currentTimeMillis();
             Collections.shuffle(data);
-            List<Integer> paged = aPaginator.ofClass(SortingPaginator.class).make().getPage(i, pageSize);
+            long excludeEnd = System.currentTimeMillis();
+            start.addAndGet(excludeEnd - excludeStart);
+            Paginator<Integer> paginator = aPaginator.ofClass(SortingPaginator.class).make();
+            List<Integer> paged = paginator.getPage(i, pageSize);
             assertThat(paged.get(0) % pageSize).isZero();
             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
         });
 
         long end = System.currentTimeMillis();
         System.out.println("findsPagesInSortingPaginator: " + (comparissons.get() / data.size() / sample.size())
-                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
+                + " comparisson rate; " + ((end - start.get()) / 1000) + " seconds");
     }
 
     @Test
     public void findsPagesInRecursivePaginator() throws Throwable {
         long start = System.currentTimeMillis();
-        sample.stream()
-                .mapToInt(i -> i / pageSize)
+        Paginator<Integer> paginator = aPaginator.make();
+        IntStream.range(0, sample.size())
                 .forEach(
                         i -> {
-                            Collections.shuffle(data);
-                            List<Integer> paged = aPaginator.make().getPage(i, pageSize);
+                            List<Integer> paged = paginator.getPage(i, pageSize);
                             assertThat(paged.get(0) % pageSize).isZero();
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
@@ -123,14 +125,12 @@ public class ElementSelectorITest {
     @Test
     public void findsPagesInPaginatorWithElementPositionSelector() throws Throwable {
         long start = System.currentTimeMillis();
-        sample.stream()
-                .mapToInt(i -> i / pageSize)
+        Paginator<Integer> paginator = aPaginator.ofClass(DoubleSelectorPaginator.class)
+                .withSelector(ElementPositionSelector.class).make();
+        IntStream.range(0, sample.size())
                 .forEach(
                         i -> {
-                            Collections.shuffle(data);
-
-                            List<Integer> paged = aPaginator.ofClass(DoubleSelectorPaginator.class)
-                                    .withSelector(ElementPositionSelector.class).make().getPage(i, pageSize);
+                            List<Integer> paged = paginator.getPage(i, pageSize);
                             assertThat(paged.get(0) % pageSize).isZero();
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
@@ -141,9 +141,12 @@ public class ElementSelectorITest {
 
     @Test
     public void findsPagesInSortingPaginatorWithElementPositionSelector() throws Throwable {
-        long start = System.currentTimeMillis();
-        sample.stream().mapToInt(i -> i / pageSize).forEach(i -> {
+        AtomicLong start = new AtomicLong(System.currentTimeMillis());
+        IntStream.range(0, sample.size()).forEach(i -> {
+            long excludeStart = System.currentTimeMillis();
             Collections.shuffle(data);
+            long excludeEnd = System.currentTimeMillis();
+            start.addAndGet(excludeEnd - excludeStart);
             List<Integer> paged = aPaginator.ofClass(SortingPaginator.class)
                     .withSelector(ElementPositionSelector.class).make().getPage(i, pageSize);
             assertThat(paged.get(0) % pageSize).isZero();
@@ -151,18 +154,17 @@ public class ElementSelectorITest {
         });
         long end = System.currentTimeMillis();
         System.out.println("findsPagesInSortingPaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size())
-                + " comparisson rate; " + ((end - start) / 1000) + " seconds");
+                + " comparisson rate; " + ((end - start.get()) / 1000) + " seconds");
     }
 
     @Test
     public void findsPagesInRecursivePaginatorWithElementPositionSelector() throws Throwable {
         long start = System.currentTimeMillis();
-        sample.stream()
-                .mapToInt(i -> i / pageSize)
+        Paginator<Integer> paginator = aPaginator.withSelector(ElementPositionSelector.class).make();
+        IntStream.range(0, sample.size())
                 .forEach(
                         i -> {
-                            Collections.shuffle(data);
-                            List<Integer> paged = aPaginator.withSelector(ElementPositionSelector.class).make().getPage(i, pageSize);
+                            List<Integer> paged = paginator.getPage(i, pageSize);
                             assertThat(paged.get(0) % pageSize).isZero();
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
