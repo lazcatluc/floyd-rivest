@@ -18,6 +18,7 @@ import ro.contezi.floyd.rivest.partition.FixedSize;
 import ro.contezi.floyd.rivest.partition.SquareRoot;
 import ro.contezi.floyd.rivest.selector.ElementPositionSelector;
 import ro.contezi.floyd.rivest.selector.KthElementSelector;
+import ro.contezi.floyd.rivest.selector.ParallelElementPositionSelector;
 
 public class ElementSelectorITest {
 
@@ -45,27 +46,27 @@ public class ElementSelectorITest {
         aPaginator = APaginator.of(comparator).withData(data);
     }
 
-    protected void assertFindsElementsInSample(Selector<Integer> selector) {
+    protected void assertFindsElementsInSample(String title, Selector<Integer> selector) throws Throwable {
         for (Integer i : sample) {
             try {
                 assertThat(selector.find(i)).isEqualTo(i);
-            } catch (RuntimeException re) {
+            } catch (Throwable re) {
                 System.out.println("Failed for " + i + " in " + data);
                 throw re;
             }
         }
-        System.out.println(comparissons.get() / data.size() / sample.size());
+        System.out.println(title + ": " + comparissons.get() / data.size() / sample.size());
     }
 
     @Test
     @Ignore
-    public void findsElementsNonRecursiveSquareRoot() throws Exception {
-        assertFindsElementsInSample(aPaginator.withSelector(KthElementSelector.class).withPartitioner(SquareRoot.class)
-                .makeSelector());
+    public void findsElementsNonRecursiveSquareRoot() throws Throwable {
+        assertFindsElementsInSample("findsElementsNonRecursiveSquareRoot",
+                aPaginator.withSelector(KthElementSelector.class).withPartitioner(SquareRoot.class).makeSelector());
     }
 
     @Test
-    public void findsPagesInPaginator() throws Exception {
+    public void findsPagesInPaginator() throws Throwable {
         sample.stream()
                 .mapToInt(i -> i / pageSize)
                 .forEach(
@@ -77,11 +78,11 @@ public class ElementSelectorITest {
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
 
-        System.out.println(comparissons.get() / data.size() / sample.size());
+        System.out.println("findsPagesInPaginator: " + (comparissons.get() / data.size() / sample.size()));
     }
 
     @Test
-    public void findsPagesInSortingPaginator() throws Exception {
+    public void findsPagesInSortingPaginator() throws Throwable {
         sample.stream().mapToInt(i -> i / pageSize).forEach(i -> {
             Collections.shuffle(data);
             List<Integer> paged = aPaginator.ofClass(SortingPaginator.class).make().getPage(i, pageSize);
@@ -89,11 +90,11 @@ public class ElementSelectorITest {
             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
         });
 
-        System.out.println(comparissons.get() / data.size() / sample.size());
+        System.out.println("findsPagesInSortingPaginator: " + (comparissons.get() / data.size() / sample.size()));
     }
 
     @Test
-    public void findsPagesInRecursivePaginator() throws Exception {
+    public void findsPagesInRecursivePaginator() throws Throwable {
         sample.stream()
                 .mapToInt(i -> i / pageSize)
                 .forEach(
@@ -104,50 +105,100 @@ public class ElementSelectorITest {
                             assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
                         });
 
-        System.out.println(comparissons.get() / data.size() / sample.size());
+        System.out.println("findsPagesInRecursivePaginator: " + (comparissons.get() / data.size() / sample.size()));
     }
 
     @Test
-    public void findsElementsRecursiveLog2() throws Exception {
-        assertFindsElementsInSample(aPaginator.makeSelector());
+    public void findsPagesInPaginatorWithElementPositionSelector() throws Throwable {
+        sample.stream()
+                .mapToInt(i -> i / pageSize)
+                .forEach(
+                        i -> {
+                            Collections.shuffle(data);
+
+                            List<Integer> paged = aPaginator.ofClass(DoubleSelectorPaginator.class)
+                                    .withSelector(ElementPositionSelector.class).make().getPage(i, pageSize);
+                            assertThat(paged.get(0) % pageSize).isZero();
+                            assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
+                        });
+
+        System.out.println("findsPagesInPaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size()));
     }
 
     @Test
-    public void findsElementsRecursiveFixedSize20() throws Exception {
-        assertFindsElementsInSample(aPaginator.withPartitioner(FixedSize.class).withFixedSize(20).makeSelector());
+    public void findsPagesInSortingPaginatorWithElementPositionSelector() throws Throwable {
+        sample.stream().mapToInt(i -> i / pageSize).forEach(i -> {
+            Collections.shuffle(data);
+            List<Integer> paged = aPaginator.ofClass(SortingPaginator.class)
+                    .withSelector(ElementPositionSelector.class).make().getPage(i, pageSize);
+            assertThat(paged.get(0) % pageSize).isZero();
+            assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
+        });
+
+        System.out.println("findsPagesInSortingPaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size()));
     }
 
     @Test
-    public void findsElementsRecursiveFixedSize200() throws Exception {
-        assertFindsElementsInSample(fixedSizeSelector(200));
+    public void findsPagesInRecursivePaginatorWithElementPositionSelector() throws Throwable {
+        sample.stream()
+                .mapToInt(i -> i / pageSize)
+                .forEach(
+                        i -> {
+                            Collections.shuffle(data);
+                            List<Integer> paged = aPaginator.withSelector(ElementPositionSelector.class).make().getPage(i, pageSize);
+                            assertThat(paged.get(0) % pageSize).isZero();
+                            assertThat(paged.size()).isLessThanOrEqualTo(pageSize);
+                        });
+
+        System.out.println("findsPagesInRecursivePaginatorWithElementPositionSelector: " + (comparissons.get() / data.size() / sample.size()));
     }
 
     @Test
-    public void findsElementsRecursiveFixedSize2000() throws Exception {
-        assertFindsElementsInSample(fixedSizeSelector(2000));
+    public void findsElementsRecursiveLog2() throws Throwable {
+        assertFindsElementsInSample("findsElementsRecursiveLog2", aPaginator.makeSelector());
     }
 
     @Test
-    public void findsElementsRecursiveFixedSize600() throws Exception {
-        assertFindsElementsInSample(fixedSizeSelector(600));
+    public void findsElementsRecursiveFixedSize20() throws Throwable {
+        assertFindsElementsInSample("findsElementsRecursiveFixedSize20", aPaginator.withPartitioner(FixedSize.class).withFixedSize(20).makeSelector());
     }
 
     @Test
-    public void findsElementsRecursiveFixedSize1000() throws Exception {
-        assertFindsElementsInSample(fixedSizeSelector(1000));
+    public void findsElementsRecursiveFixedSize200() throws Throwable {
+        assertFindsElementsInSample("findsElementsRecursiveFixedSize200", fixedSizeSelector(200));
     }
 
     @Test
-    public void findsElementsRecursiveFixedSize1500() throws Exception {
-        assertFindsElementsInSample(fixedSizeSelector(1500));
+    public void findsElementsRecursiveFixedSize2000() throws Throwable {
+        assertFindsElementsInSample("findsElementsRecursiveFixedSize2000", fixedSizeSelector(2000));
     }
 
     @Test
-    public void findsElementsInElementPositionSelector() {
-        assertFindsElementsInSample(aPaginator.withSelector(ElementPositionSelector.class).makeSelector());
+    public void findsElementsRecursiveFixedSize600() throws Throwable {
+        assertFindsElementsInSample("findsElementsRecursiveFixedSize600", fixedSizeSelector(600));
     }
 
-    protected Selector<Integer> fixedSizeSelector(final int fixedSize) {
+    @Test
+    public void findsElementsRecursiveFixedSize1000() throws Throwable {
+        assertFindsElementsInSample("findsElementsRecursiveFixedSize1000", fixedSizeSelector(1000));
+    }
+
+    @Test
+    public void findsElementsRecursiveFixedSize1500() throws Throwable {
+        assertFindsElementsInSample("findsElementsRecursiveFixedSize1500", fixedSizeSelector(1500));
+    }
+
+    @Test
+    public void findsElementsInElementPositionSelector() throws Throwable {
+        assertFindsElementsInSample("findsElementsInElementPositionSelector", aPaginator.withSelector(ElementPositionSelector.class).makeSelector());
+    }
+
+    @Test
+    public void findsElementsInParallelElementPositionSelector() throws Throwable {
+        assertFindsElementsInSample("findsElementsInParallelElementPositionSelector", aPaginator.withSelector(ParallelElementPositionSelector.class).makeSelector());
+    }
+
+    protected Selector<Integer> fixedSizeSelector(final int fixedSize) throws Throwable {
         return aPaginator.withPartitioner(FixedSize.class).withFixedSize(fixedSize).makeSelector();
     }
 }

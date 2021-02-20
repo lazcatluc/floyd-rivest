@@ -28,9 +28,6 @@ public class ElementPositionSelector<T> implements Selector<T> {
                 newPivot = elementPosition.getOneHigher();
                 k -= elementPosition.getPositionedRank();
             }
-            if (newPivot == null) {
-                return pivot;
-            }
             pivot = newPivot;
             elementPosition.position(pivot);
         }

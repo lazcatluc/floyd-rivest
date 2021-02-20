@@ -61,6 +61,10 @@ public class ElementPosition<T> {
         return this;
     }
 
+    public T first() {
+        return elements.iterator().next();
+    }
+
     public int getPositionedRank() {
         return lower.size();
     }
@@ -74,10 +78,24 @@ public class ElementPosition<T> {
     }
 
     public T getOneLower() {
-        return lower.stream().findAny().orElseThrow(ArrayIndexOutOfBoundsException::new);
+        return getOneLowerOptional().orElseThrow(ArrayIndexOutOfBoundsException::new);
+    }
+
+    public Optional<T> getOneLowerOptional() {
+        return lower.stream().findAny();
     }
 
     public T getOneHigher() {
-        return higherOrEqual.stream().filter(e -> comparator.compare(positioned, e) < 0).findAny().orElse(null);
+        return getOneHigherOptional().orElse(null);
+    }
+
+    public Optional<T> getOneHigherOptional() {
+        return higherOrEqual.stream().filter(e -> comparator.compare(positioned, e) < 0).findAny();
+    }
+
+    public void reset() {
+        positioned = null;
+        lower = null;
+        higherOrEqual = null;
     }
 }

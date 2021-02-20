@@ -17,6 +17,7 @@ import ro.contezi.floyd.rivest.partition.Log2;
 import ro.contezi.floyd.rivest.partition.SquareRoot;
 import ro.contezi.floyd.rivest.selector.ElementPositionSelector;
 import ro.contezi.floyd.rivest.selector.KthElementSelector;
+import ro.contezi.floyd.rivest.selector.ParallelElementPositionSelector;
 import ro.contezi.floyd.rivest.selector.RecursiveKthElementSelector;
 
 @SuppressWarnings("rawtypes")
@@ -40,6 +41,7 @@ public class APaginator<T> {
         selectors.put(ElementPositionSelector.class, () -> new ElementPositionSelector<>(data, comparator));
         selectors.put(KthElementSelector.class, () -> new KthElementSelector<T>(data, partitioners.get(partition)
                 .apply(data), comparator));
+        selectors.put(ParallelElementPositionSelector.class, () -> new ParallelElementPositionSelector<>(data, comparator, 8));
         paginators.put(DoubleSelectorPaginator.class, () -> new DoubleSelectorPaginator<>(data, selectors.get(selector)
                 .get(), comparator));
         paginators.put(SortingPaginator.class, () -> new SortingPaginator<>(new ArrayList<>(data), comparator));
